@@ -1,0 +1,15 @@
+{
+  "name": "ai-mindmap",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["client", "server"],
+  "scripts": {
+    "dev": "concurrently -c auto -n client,server \"npm run dev -w client\" \"npm run dev -w server\"",
+    "install:all": "npm install -ws",
+    "build": "npm run build -w client",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
