@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zer0:tickersage:market_snapshot:v1",
+  "title": "MarketSnapshot",
+  "type": "object",
+  "required": [
+    "source",
+    "symbol",
+    "market",
+    "interval",
+    "captured_at",
+    "candles",
+    "indicators",
+    "features"
+  ],
+  "properties": {
+    "source": {
+      "type": "string",
+      "enum": ["TickerSage", "TickerSage-compatible-adapter"]
+    },
+    "symbol": { "type": "string", "minLength": 1 },
+    "market": { "type": "string", "minLength": 1 },
+    "interval": { "type": "string", "minLength": 1 },
+    "captured_at": { "type": "string", "format": "date-time" },
+    "timezone": { "type": "string" },
+    "candles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["timestamp", "open", "high", "low", "close", "volume"],
+        "properties": {
+          "timestamp": { "type": "string", "format": "date-time" },
+          "open": { "type": "number" },
+          "high": { "type": "number" },
+          "low": { "type": "number" },
+          "close": { "type": "number" },
+          "volume": { "type": "number" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "indicators": {
+      "type": "object",
+      "properties": {
+        "ma": { "type": "array", "items": { "type": "number" } },
+        "ema": { "type": "array", "items": { "type": "number" } },
+        "rsi": { "type": "array", "items": { "type": "number" } },
+        "macd": {
+          "type": "object",
+          "properties": {
+            "macd": { "type": "number" },
+            "signal": { "type": "number" },
+            "histogram": { "type": "number" }
+          },
+          "additionalProperties": false
+        },
+        "boll": {
+          "type": "object",
+          "properties": {
+            "upper": { "type": "number" },
+            "middle": { "type": "number" },
+            "lower": { "type": "number" }
+          },
+          "additionalProperties": false
+        },
+        "volume_ma": { "type": "array", "items": { "type": "number" } }
+      },
+      "additionalProperties": true
+    },
+    "features": {
+      "type": "object",
+      "required": [
+        "trend",
+        "momentum",
+        "volatility",
+        "volume_participation",
+        "structure",
+        "timeframe_alignment"
+      ],
+      "properties": {
+        "trend": {
+          "type": "object",
+          "properties": {
+            "direction": { "type": "string", "enum": ["up", "down", "flat", "mixed"] },
+            "strength": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["direction", "strength"],
+          "additionalProperties": false
+        },
+        "momentum": {
+          "type": "object",
+          "properties": {
+            "state": { "type": "string", "enum": ["accelerating", "decelerating", "neutral", "diverging"] },
+            "score": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["state", "score"],
+          "additionalProperties": false
+        },
+        "volatility": {
+          "type": "object",
+          "properties": {
+            "state": { "type": "string", "enum": ["compressed", "normal", "expanded"] },
+            "score": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["state", "score"],
+          "additionalProperties": false
+        },
+        "volume_participation": {
+          "type": "object",
+          "properties": {
+            "state": { "type": "string", "enum": ["weak", "normal", "strong", "climactic"] },
+            "score": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["state", "score"],
+          "additionalProperties": false
+        },
+        "structure": {
+          "type": "object",
+          "properties": {
+            "regime": { "type": "string", "enum": ["trend", "range", "breakout_watch", "breakdown_watch", "chop"] },
+            "support": { "type": "array", "items": { "type": "number" } },
+            "resistance": { "type": "array", "items": { "type": "number" } },
+            "invalidation": { "type": ["number", "null"] }
+          },
+          "required": ["regime"],
+          "additionalProperties": false
+        },
+        "timeframe_alignment": {
+          "type": "object",
+          "properties": {
+            "state": { "type": "string", "enum": ["aligned", "mixed", "conflicted"] },
+            "score": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "required": ["state", "score"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "thesis": {
+      "type": "object",
+      "properties": {
+        "bias": { "type": "string", "enum": ["long", "short", "neutral", "no_trade"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 100 },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "contradictions": { "type": "array", "items": { "type": "string" } },
+        "next_check_at": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
